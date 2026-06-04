@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EB-2 NIW Command Center — Mahdeen (Sameer) Khan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1; --card:#ffffff; --ink:#1c1a17; --muted:#6f6a61; --faint:#a39c8f;
+    --line:#e6e0d4; --accent:#1d5c4a; --accent-soft:#e3efe9; --gate:#b07415; --gate-soft:#f7ecd8;
+    --danger:#8a2f2b; --danger-soft:#f6e6e4; --mono:'Spline Sans Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Spline Sans',sans-serif;font-size:16px;line-height:1.65;
+    background-image:radial-gradient(var(--line) 0.5px, transparent 0.5px);background-size:26px 26px}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px 120px}
+
+  header{padding:56px 0 24px;border-bottom:3px solid var(--ink)}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(32px,5vw,50px);line-height:1.04;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--accent)}
+  .sub{margin-top:12px;color:var(--muted);max-width:64ch}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .chip{font-family:var(--mono);font-size:12px;padding:5px 12px;border:1px solid var(--ink);border-radius:999px;background:var(--card)}
+  .chip.green{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  .topbar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 0}
+  .tabs{display:flex;gap:8px;margin-bottom:10px}
+  .tab{font-family:var(--mono);font-size:13px;letter-spacing:.04em;padding:8px 18px;border:1.5px solid var(--ink);
+    border-radius:999px;background:var(--card);cursor:pointer;color:var(--ink);transition:all .15s}
+  .tab.active{background:var(--ink);color:var(--paper)}
+  .tab:hover:not(.active){box-shadow:2px 2px 0 var(--accent-soft);border-color:var(--accent)}
+  .progress-inner{display:flex;align-items:center;gap:16px}
+  .ptrack{flex:1;height:10px;border:1px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--card)}
+  .pfill{height:100%;width:0%;background:var(--accent);transition:width .35s ease}
+  .pcount{font-family:var(--mono);font-size:13px;min-width:130px;text-align:right;color:var(--muted)}
+  .pcount strong{color:var(--ink)}
+
+  .phase{margin-top:52px;display:flex;align-items:baseline;gap:14px}
+  .phase-num{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--accent)}
+  .phase h2{font-family:'Fraunces',serif;font-weight:600;font-size:26px;letter-spacing:-.01em}
+  .phase-rule{flex:1;height:1px;background:var(--ink);opacity:.25;align-self:center}
+
+  details.card{background:var(--card);border:1px solid var(--ink);border-radius:14px;margin-top:18px;overflow:hidden;
+    box-shadow:4px 4px 0 rgba(28,26,23,.08)}
+  details.card[open]{box-shadow:6px 6px 0 rgba(29,92,74,.16)}
+  summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:18px 22px;user-select:none}
+  summary::-webkit-details-marker{display:none}
+  .badge{font-family:'Fraunces',serif;font-weight:700;font-size:18px;width:42px;height:42px;flex:none;border:1.5px solid var(--ink);
+    border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--paper)}
+  .stitle{flex:1}
+  .stitle h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px;line-height:1.2}
+  .stitle p{font-size:13px;color:var(--muted);margin-top:2px}
+  .scount{font-family:var(--mono);font-size:12px;color:var(--muted);padding:4px 10px;border:1px solid var(--line);border-radius:999px;flex:none;transition:all .3s}
+  .scount.done{background:var(--accent);border-color:var(--accent);color:#fff}
+  .caret{flex:none;width:10px;height:10px;border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);
+    transform:rotate(45deg);transition:transform .25s;margin-left:2px}
+  details[open] .caret{transform:rotate(-135deg)}
+  .body{padding:4px 22px 22px;border-top:1px dashed var(--line)}
+  .subhead{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    margin:20px 0 2px;padding-bottom:6px;border-bottom:1.5px solid var(--accent-soft)}
+  .note{font-size:13.5px;color:var(--muted);background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0 6px}
+  .note.warn{border-left-color:var(--gate);background:var(--gate-soft)}
+  .note.red{border-left-color:var(--danger);background:var(--danger-soft)}
+
+  .plan{margin-top:18px;background:var(--paper);border:1px dashed var(--accent);border-radius:10px;padding:14px 18px}
+  .plan-h{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .plan ol{margin-left:20px}
+  .plan li{padding:3px 0;font-size:14.5px}
+  .plan b{font-weight:600}
+
+  .strat{margin-top:10px}
+  .strat-row{display:grid;grid-template-columns:175px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--paper)}
+  .strat-row:last-child{border-bottom:none}
+  .strat-k{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding-top:4px}
+  .strat-v{font-size:15.5px;line-height:1.7}
+  .strat-v b{font-weight:600}
+  .strat-v ul{list-style:none;margin-top:2px}
+  .strat-v li{padding:3px 0 3px 20px;position:relative}
+  .strat-v li::before{content:"\2192";position:absolute;left:0;color:var(--accent);font-family:var(--mono);font-size:13px}
+  @media(max-width:560px){.strat-row{grid-template-columns:1fr;gap:4px}}
+
+  ul.checks{list-style:none;margin-top:10px}
+  ul.checks li{display:flex;gap:13px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--paper)}
+  ul.checks li:last-child{border-bottom:none}
+  ul.checks input{appearance:none;width:21px;height:21px;flex:none;margin-top:2px;border:1.5px solid var(--ink);border-radius:6px;
+    background:var(--card);cursor:pointer;position:relative;transition:all .15s}
+  ul.checks input:hover{border-color:var(--accent);box-shadow:2px 2px 0 var(--accent-soft)}
+  ul.checks input:checked{background:var(--accent);border-color:var(--accent)}
+  ul.checks input:checked::after{content:"";position:absolute;left:6px;top:2.5px;width:5px;height:10px;
+    border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg)}
+  ul.checks label{cursor:pointer;flex:1;transition:color .2s}
+  ul.checks input:checked + label{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--accent);text-decoration-thickness:1.5px}
+  ul.checks label b{font-weight:600}
+  .tag{font-family:var(--mono);font-size:11px;padding:1px 8px;border-radius:999px;margin-left:6px;white-space:nowrap}
+  .tag.now{background:var(--gate-soft);color:var(--gate);border:1px solid var(--gate)}
+  .tag.key{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+
+  table.fees{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+  table.fees th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--ink)}
+  table.fees td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.fees td.amt{font-family:var(--mono);white-space:nowrap;text-align:right}
+  table.fees tr.total td{font-weight:600;border-top:2px solid var(--ink);border-bottom:none;background:var(--accent-soft)}
+
+  ol.rules{counter-reset:r;list-style:none;margin-top:8px}
+  ol.rules li{counter-increment:r;display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--paper)}
+  ol.rules li::before{content:counter(r,decimal-leading-zero);font-family:'Fraunces',serif;font-style:italic;
+    font-size:20px;color:var(--accent);flex:none;width:36px}
+  ol.rules b{font-weight:600}
+
+  .tl{margin-top:10px;border-left:2px solid var(--ink);padding-left:22px}
+  .tl-item{position:relative;padding:10px 0 16px}
+  .tl-item::before{content:"";position:absolute;left:-28px;top:18px;width:11px;height:11px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--ink)}
+  .tl-item.hot::before{background:var(--accent);border-color:var(--accent)}
+  .tl-when{font-family:var(--mono);font-size:12.5px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+  .tl-what{margin-top:2px}
+
+  /* ---------- matrix tab ---------- */
+  .mx-summary{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 16px}
+  .mx-stat{background:var(--card);border:1px solid var(--ink);border-radius:12px;padding:12px 18px;min-width:130px;
+    box-shadow:3px 3px 0 rgba(28,26,23,.08)}
+  .mx-stat .n{font-family:'Fraunces',serif;font-weight:700;font-size:26px}
+  .mx-stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .mx-stat.green .n{color:var(--accent)} .mx-stat.amber .n{color:var(--gate)} .mx-stat.red .n{color:var(--danger)}
+  .matrix-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--ink);border-radius:14px;
+    box-shadow:4px 4px 0 rgba(28,26,23,.08);margin-top:6px}
+  table.matrix{width:100%;min-width:880px;border-collapse:collapse;font-size:13.5px}
+  table.matrix th{position:sticky;top:0;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:10px 12px;font-weight:500}
+  table.matrix td{padding:9px 12px;border-bottom:1px solid var(--paper);vertical-align:top}
+  table.matrix tr:hover td{background:var(--paper)}
+  td.ex{font-family:var(--mono);font-size:12px;white-space:nowrap;color:var(--accent)}
+  td.prong{font-family:var(--mono);font-size:12px;white-space:nowrap}
+  tr.star td{font-weight:600;background:var(--accent-soft)}
+  select.status{font-family:var(--mono);font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid var(--ink);cursor:pointer}
+  select.s-complete{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+  select.s-progress, select.s-draft{background:var(--gate-soft);color:var(--gate);border-color:var(--gate)}
+  select.s-not{background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+
+  .colophon{margin-top:64px;padding-top:22px;border-top:3px solid var(--ink);display:flex;justify-content:space-between;
+    flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .reset{font-family:var(--mono);font-size:12px;background:none;border:1px solid var(--ink);border-radius:999px;
+    padding:5px 14px;cursor:pointer;color:var(--ink)}
+  .reset:hover{background:var(--ink);color:var(--paper)}
+  .hidden{display:none}
+  @media print{.topbar{position:static}body{background:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Self-petition · pro se · advanced degree basis</div>
+  <h1>EB-2 NIW <em>Command Center</em></h1>
+  <p class="sub">Mahdeen (Sameer) Khan — checklist, execution plans, and evidence matrix in one place. Endeavor: AI &amp; quantitative methods applied to education access and outcomes.</p>
+  <div class="meta">
+    <span class="chip green">Priority date: current (Bangladesh)</span>
+    <span class="chip">OPT expires ~May 28, 2027</span>
+    <span class="chip">Target filing: Dec 2026 (gated)</span>
+    <span class="chip">Evidence decides — file strong, not fast</span>
+  </div>
+</header>
+
+<div class="topbar">
+  <div class="tabs">
+    <button class="tab active" id="tabbtn-check" onclick="showTab('check')">Checklist &amp; plans</button>
+    <button class="tab" id="tabbtn-matrix" onclick="showTab('matrix')">Evidence matrix</button>
+  </div>
+  <div class="progress-inner" id="progressrow">
+    <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    <div class="pcount"><strong id="pdone">0</strong> / <span id="ptotal">0</span> complete</div>
+  </div>
+</div>
+
+<!-- ================= TAB 1 : CHECKLIST ================= -->
+<div id="tab-check">
+
+<details class="card" open>
+  <summary><div class="badge">0</div><div class="stitle"><h3>The strategy</h3><p>One screen — never lose the plot</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <div class="strat">
+      <div class="strat-row"><div class="strat-k">Route</div><div class="strat-v">EB-2 as an <b>Advanced Degree Professional</b> (Harvard master's — eligibility settled, nothing more to prove), with a <b>National Interest Waiver</b> so you self-petition without an employer.</div></div>
+      <div class="strat-row"><div class="strat-k">Endeavor</div><div class="strat-v">AI and quantitative methods applied to improving <b>education access and outcomes</b>. Education is the headline; finance and research are supporting evidence — never co-equal storylines.</div></div>
+      <div class="strat-row"><div class="strat-k">Advantages</div><div class="strat-v"><ul>
+        <li>Bangladesh birth → <b>current priority date</b> → concurrent I-485 → EAD without the H-1B lottery</li>
+        <li>OPT now + STEM extension available (LDIT is STEM-eligible) → runway to <b>~mid-2028</b></li>
+        <li>LDIT degree matches the endeavor cleanly</li>
+      </ul></div></div>
+      <div class="strat-row"><div class="strat-k">The test</div><div class="strat-v">All three <b>Dhanasar prongs</b>, each passing independently — proven by you, by preponderance of the evidence.</div></div>
+      <div class="strat-row"><div class="strat-k">The climate</div><div class="strat-v">Aggregate NIW approvals run low (~⅓) under stricter standards; your sub-profile — advanced STEM-linked degree, AI, publications — historically fares better, <b>but only the evidence file makes that true.</b></div></div>
+    </div>
+  </div>
+</details>
+
+<div class="phase"><span class="phase-num">Phase I</span><h2>Foundations</h2><div class="phase-rule"></div></div>
+
+<details class="card">
+  <summary><div class="badge">1</div><div class="stitle"><h3>Money</h3><p>~$6,500 liquid by filing day — all fees fire at once, inside the mailed box</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <table class="fees">
+      <tr><th>Item</th><th style="text-align:right">Cost (2026)</th></tr>
+      <tr><td>Form I-140</td><td class="amt">$715</td></tr>
+      <tr><td>Asylum Program fee (self-petitioner)</td><td class="amt">$300</td></tr>
+      <tr><td>Form I-485 (adjustment of status)</td><td class="amt">$1,440</td></tr>
+      <tr><td>Biometrics</td><td class="amt">$260</td></tr>
+      <tr><td>I-907 Premium Processing — standard NIW runs 18–24+ months</td><td class="amt">$2,965</td></tr>
+      <tr><td>Limited-scope attorney review of finished package</td><td class="amt">~$500–1,500</td></tr>
+      <tr><td>I-693 medical exam (civil surgeon)</td><td class="amt">~$200–500</td></tr>
+      <tr><td>Translations, printing, mailing, photos</td><td class="amt">~$100–300</td></tr>
+      <tr class="total"><td>Target filing fund</td><td class="amt">≈ $6,500</td></tr>
+    </table>
+    <ul class="checks">
+      <li><input type="checkbox" id="p1a"><label for="p1a">Open / designate a dedicated filing-fund account <span class="tag now">this week</span></label></li>
+      <li><input type="checkbox" id="p1b"><label for="p1b">Verify all fees on the USCIS fee schedule immediately before filing</label></li>
+      <li><input type="checkbox" id="p1c"><label for="p1c">Internalized: fees are non-refundable on denial — file once, file strong</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li>Today: open a separate high-yield savings sub-account, name it <b>"GC Filing — do not touch."</b></li>
+      <li>Automate <b>$1,100/month</b> transfers June–November = $6,600 by the gate. On a banking income this should be invisible.</li>
+      <li>The money fires once, on filing day — checks or G-1450 credit forms clipped to each form. Wrong fee = whole bundle rejected and mailed back.</li>
+      <li>The week you mail: re-verify every fee at uscis.gov/forms/filing-fees and confirm premium processing is still available for NIW.</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">2</div><div class="stitle"><h3>Core eligibility &amp; identity documents</h3><p>Gather now — easy wins</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p2a"><label for="p2a"><b>Harvard master's diploma + official transcript</b> — the anchor <span class="tag now">order now</span></label></li>
+      <li><input type="checkbox" id="p2b"><label for="p2b">Colby degree + transcript</label></li>
+      <li><input type="checkbox" id="p2c"><label for="p2c">Oxford visiting program records; Tuck certificate</label></li>
+      <li><input type="checkbox" id="p2d"><label for="p2d">MIT Sloan cross-registration transcript / records</label></li>
+      <li><input type="checkbox" id="p2e"><label for="p2e"><b>Valid passport</b> — renew if under ~2 years left</label></li>
+      <li><input type="checkbox" id="p2f"><label for="p2f"><b>I-94</b> — download current record</label></li>
+      <li><input type="checkbox" id="p2g"><label for="p2g"><b>All I-20s</b> ever issued, including OPT-endorsed pages</label></li>
+      <li><input type="checkbox" id="p2h"><label for="p2h"><b>Both EAD cards</b>, front and back copies</label></li>
+      <li><input type="checkbox" id="p2i"><label for="p2i"><b>I-983 + E-Verify details + employment records</b> (from the Feb–May 2027 STEM extension onward)</label></li>
+      <li><input type="checkbox" id="p2m"><label for="p2m"><b>Tax returns + W-2s</b>, filed with correct residency status</label></li>
+      <li><input type="checkbox" id="p2n"><label for="p2n"><b>SEVP portal current</b> — employer updates within 10 days; under the 90-day unemployment cap</label></li>
+      <li><input type="checkbox" id="p2j"><label for="p2j"><b>Birth certificate</b> + certified English translation</label></li>
+      <li><input type="checkbox" id="p2k"><label for="p2k">Passport-style photos per current USCIS spec — taken close to filing</label></li>
+      <li><input type="checkbox" id="p2l"><label for="p2l"><b>Immigration-formatted CV</b> — full spec in Part 6</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li>Today, 20 minutes: order Harvard + Colby transcripts online (registrar / Parchment, ~$10–25 each, 1–2 weeks delivery).</li>
+      <li>Create one cloud folder, <b>"NIW"</b>, with numbered subfolders (01-Status, 02-Degrees, 03-Endeavor, 04-Evidence, 05-Letters, 06-Filing). Everything lands there, named with dates.</li>
+      <li>This week: scan passport ID page, every I-20, both EAD cards (front/back); download I-94 from i94.cbp.dhs.gov.</li>
+      <li>Ask family to obtain a certified copy of your birth certificate from Bangladesh now — slow-moving item. Get an ATA-certified translation (~$30–60).</li>
+      <li>Check passport expiry; if under ~2 years, renew via the Bangladesh consulate before filing season.</li>
+      <li>Standing habit: report any job change in the SEVP portal within 10 days; save every paystub and offer letter to 01-Status.</li>
+    </ol></div>
+  </div>
+</details>
+
+<div class="phase"><span class="phase-num">Phase II</span><h2>Production</h2><div class="phase-rule"></div></div>
+
+<details class="card">
+  <summary><div class="badge">3</div><div class="stitle"><h3>The endeavor statement</h3><p>Write FIRST — the brief, letters, and CV all hang off it</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p3a"><label for="p3a">1–3 pages defining <b>one specific endeavor</b>: AI / quantitative methods applied to education access and outcomes <span class="tag key">decides Prong 1</span></label></li>
+      <li><input type="checkbox" id="p3b"><label for="p3b">Specific projects and goals — "what I will build," not "what an analyst does"</label></li>
+      <li><input type="checkbox" id="p3c"><label for="p3c">Forward-looking 3-year plan: activities, milestones, how pursued</label></li>
+      <li><input type="checkbox" id="p3d"><label for="p3d">Explicit degree–endeavor link: LDIT → education technology</label></li>
+      <li><input type="checkbox" id="p3e"><label for="p3e">Impact framed at field / region / public level — never employer benefit</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li>Block <b>90 minutes</b>. Write one rough paragraph answering four questions: what do my tools do · for whom · what broken thing in education do they fix · what will exist by 2029.</li>
+      <li>Send the rough paragraph to Claude → shape into three sections: <b>the problem</b> (national scale, with statistics), <b>my work</b> (specific tools, methods, pilot results), <b>the 3-year plan</b> (one milestone block per year).</li>
+      <li>Concreteness pass: every sentence gets a name, number, or institution. "Improve learning" → "raise reading outcomes measured by X for community-college students."</li>
+      <li>Trap pass: delete any sentence about banking prestige or the general importance of education. Both fail Prong 1.</li>
+      <li>Freeze v1. Revisit only after letters are drafted — recommenders' language often sharpens it.</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">4</div><div class="stitle"><h3>Evidence by prong</h3><p>Prong 2 is the battleground</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <div class="subhead">Prong 1 — substantial merit &amp; national importance</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p4a"><label for="p4a">AI on the critical &amp; emerging technologies list (government documents)</label></li>
+      <li><input type="checkbox" id="p4b"><label for="p4b">Federal education priorities — Dept. of Ed strategy docs, national outcome reports</label></li>
+      <li><input type="checkbox" id="p4c"><label for="p4c">Evidence YOUR work reaches beyond one institution</label></li>
+      <li><input type="checkbox" id="p4d"><label for="p4d"><b>Trap 1 avoided:</b> employer benefit ($45M/$100M deals) ≠ national importance</label></li>
+      <li><input type="checkbox" id="p4e"><label for="p4e"><b>Trap 2 avoided:</b> education work shows reach beyond one campus</label></li>
+    </ul>
+    <div class="subhead">Prong 2 — well-positioned (the battleground)</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p4f"><label for="p4f">Two existing publications — full citations + copies</label></li>
+      <li><input type="checkbox" id="p4g"><label for="p4g"><b>Pilot results write-up</b> — measured outcomes, 20-user trial <span class="tag now">start now</span></label></li>
+      <li><input type="checkbox" id="p4h"><label for="p4h">Raw trial data preserved + dated analytics exports</label></li>
+      <li><input type="checkbox" id="p4i"><label for="p4i">Tool documentation: launch dates, function, tech, screenshots, repos</label></li>
+      <li><input type="checkbox" id="p4j"><label for="p4j">Adoption metrics with numbers: users, growth curve, institutions</label></li>
+      <li><input type="checkbox" id="p4k"><label for="p4k">The 20 user testimonial letters — corroboration stack</label></li>
+      <li><input type="checkbox" id="p4l"><label for="p4l">READS Lab role documentation</label></li>
+      <li><input type="checkbox" id="p4m"><label for="p4m">Ventures (sameerlearn, finanai): traction, partnerships, revenue if any</label></li>
+      <li><input type="checkbox" id="p4n"><label for="p4n">Honors / awards — modest weight</label></li>
+      <li><input type="checkbox" id="p4o"><label for="p4o">LOIs / MOUs / interest emails from institutions or investors</label></li>
+      <li><input type="checkbox" id="p4p"><label for="p4p">Google Scholar + <b>ORCID iD</b>; citation screenshots exported quarterly</label></li>
+      <li><input type="checkbox" id="p4q"><label for="p4q">Conference talks / posters — 1–2 this year</label></li>
+      <li><input type="checkbox" id="p4r"><label for="p4r">Peer-review registration in your field</label></li>
+      <li><input type="checkbox" id="p4s"><label for="p4s">Open-source metrics if public: downloads, stars, forks</label></li>
+      <li><input type="checkbox" id="p4t"><label for="p4t">Media coverage of your work</label></li>
+      <li><input type="checkbox" id="p4u"><label for="p4u">Professional association memberships</label></li>
+      <li><input type="checkbox" id="p4v"><label for="p4v">Advisory / judging roles if offered</label></li>
+      <li><input type="checkbox" id="p4w"><label for="p4w">Grant applications or funding interest, even pending</label></li>
+    </ul>
+    <div class="subhead">Prong 3 — beneficial to waive the job offer</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p4x"><label for="p4x">Narrative: work spans ventures + research — one employer's labor cert is impractical</label></li>
+      <li><input type="checkbox" id="p4y"><label for="p4y">Economic / public benefit framing: education outcomes, US competitiveness in AI</label></li>
+      <li><input type="checkbox" id="p4z"><label for="p4z">USCIS's strong-positive combo invoked: STEM-linked degree + AI + well-positioned</label></li>
+      <li><input type="checkbox" id="p4zz"><label for="p4zz">Urgency / time-sensitivity arguments, if applicable</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li><b>Prong 1 (one afternoon):</b> download and print the NSTC Critical &amp; Emerging Technologies list and the Dept. of Education strategic plan; highlight the lines your endeavor serves; save to 04-Evidence with citations.</li>
+      <li><b>This week (30 min):</b> create Google Scholar + ORCID profiles; link your two publications; screenshot the profiles, dated.</li>
+      <li><b>Standing routine:</b> first of every month, export tool analytics to PDF → 04-Evidence. Quarterly, screenshot citation counts.</li>
+      <li><b>July:</b> draft a conference abstract from the pilot data; target education-research or EdTech venues with fall deadlines.</li>
+      <li><b>August:</b> register as a peer reviewer with 2–3 ed-tech / education journals (most have an open reviewer signup).</li>
+      <li><b>Prong 3:</b> write the waiver narrative as one page AFTER the endeavor statement exists — it reuses the same facts pointed at "why no single employer fits."</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">5</div><div class="stitle"><h3>Letters of recommendation</h3><p>~5–8 total — objective evidence carries the case; letters interpret it</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <div class="subhead">Stack A — independent expert letters (3–5)</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p5a"><label for="p5a">Recognized figures with <b>no direct tie to you</b></label></li>
+      <li><input type="checkbox" id="p5b"><label for="p5b">First-hand familiarity with your actual work</label></li>
+      <li><input type="checkbox" id="p5c"><label for="p5c">Specific examples + why the work matters to the field</label></li>
+      <li><input type="checkbox" id="p5d"><label for="p5d">Letterhead, signed, signer's CV attached</label></li>
+      <li><input type="checkbox" id="p5e"><label for="p5e">Every letter claim backed by an exhibit</label></li>
+    </ul>
+    <div class="subhead">Stack B — collaborator letters (2–3)</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p5f"><label for="p5f">READS Lab PI / supervising professors</label></li>
+      <li><input type="checkbox" id="p5g"><label for="p5g">Specific achievements, not generic praise</label></li>
+    </ul>
+    <div class="subhead">Stretch</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p5h"><label for="p5h">Government / quasi-governmental entity letter — relevant to all three prongs</label></li>
+      <li><input type="checkbox" id="p5hh"><label for="p5hh">Optional: future employer / partner / collaborator interest letter</label></li>
+    </ul>
+    <div class="subhead">Process</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p5i"><label for="p5i">Target list, 10–12 names <span class="tag now">this week — longest lead time</span></label></li>
+      <li><input type="checkbox" id="p5j"><label for="p5j">Outreach emails out (June — letters take 6–10 weeks end to end)</label></li>
+      <li><input type="checkbox" id="p5k"><label for="p5k">You draft; the signer edits and signs (standard practice)</label></li>
+      <li><input type="checkbox" id="p5l"><label for="p5l">Status tracked per recommender: asked / drafted / signed</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li><b>Build the list from five pools:</b> your papers' co-authors' wider networks · researchers you cite who'd recognize the work · HGSE / education faculty you did NOT work under · EdTech founders or product leaders · education-policy researchers. 10–12 names into the matrix.</li>
+      <li><b>Outreach email, six lines:</b> who you are (one line) · what the work is (one line + link to pilot write-up) · the ask: "a letter supporting my immigration petition — I'll provide a full draft for your edits" · the deadline · gratitude. Send in batches of four.</li>
+      <li>For each yes: within 7 days, send a one-page work summary + a <b>complete draft letter</b> tailored to that person's vantage point. Different letters must not share paragraphs — adjudicators notice template letters.</li>
+      <li>Each draft cites specific exhibits ("the pilot study found X") so every claim is corroborated.</li>
+      <li>Follow up at 2 weeks, once. <b>Target: 4 signed by October 31</b> — that's the gate condition.</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">6</div><div class="stitle"><h3>Immigration CV</h3><p>3–8 pages · an evidence document, not a screening document</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <div class="subhead">Sections, in order</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p6a"><label for="p6a">1 · Header — passport-exact legal name; no photo, no tagline</label></li>
+      <li><input type="checkbox" id="p6b"><label for="p6b">2 · Professional summary — 3–5 lines framed on the endeavor</label></li>
+      <li><input type="checkbox" id="p6c"><label for="p6c">3 · Education — full detail, month/year dates</label></li>
+      <li><input type="checkbox" id="p6d"><label for="p6d">4 · Research experience — READS Lab, above finance</label></li>
+      <li><input type="checkbox" id="p6e"><label for="p6e">5 · Professional experience — quantified; banking as transferable capability</label></li>
+      <li><input type="checkbox" id="p6f"><label for="p6f">6 · Projects &amp; tools — with <b>numbers</b></label></li>
+      <li><input type="checkbox" id="p6g"><label for="p6g">7 · Ventures — sameerlearn, finanai</label></li>
+      <li><input type="checkbox" id="p6h"><label for="p6h">8 · Publications — full citations + DOI + Scholar link</label></li>
+      <li><input type="checkbox" id="p6i"><label for="p6i">9 · Presentations &amp; talks</label></li>
+      <li><input type="checkbox" id="p6j"><label for="p6j">10 · Honors &amp; awards — modest</label></li>
+      <li><input type="checkbox" id="p6k"><label for="p6k">11 · Certifications &amp; training</label></li>
+      <li><input type="checkbox" id="p6l"><label for="p6l">12 · Teaching &amp; mentoring — supports the education narrative</label></li>
+      <li><input type="checkbox" id="p6m"><label for="p6m">13 · Peer review &amp; judging — when earned</label></li>
+      <li><input type="checkbox" id="p6n"><label for="p6n">14 · Media &amp; coverage — when earned</label></li>
+      <li><input type="checkbox" id="p6o"><label for="p6o">15 · Memberships</label></li>
+      <li><input type="checkbox" id="p6p"><label for="p6p">16 · Technical skills</label></li>
+      <li><input type="checkbox" id="p6q"><label for="p6q">17 · Languages</label></li>
+    </ul>
+    <div class="subhead">Rules</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p6r"><label for="p6r">A · 3–8 pages; completeness beats brevity</label></li>
+      <li><input type="checkbox" id="p6s"><label for="p6s">B · <b>Consistency is sacred</b> — mismatch = RFE trigger</label></li>
+      <li><input type="checkbox" id="p6t"><label for="p6t">C · <b>Verifiable only</b> — "$100M" only if documentable</label></li>
+      <li><input type="checkbox" id="p6u"><label for="p6u">D · Quantify relentlessly</label></li>
+      <li><input type="checkbox" id="p6v"><label for="p6v">E · Architecture mirrors the endeavor</label></li>
+      <li><input type="checkbox" id="p6w"><label for="p6w">F · No fluff adjectives</label></li>
+      <li><input type="checkbox" id="p6x"><label for="p6x">G · Month/year precision everywhere</label></li>
+      <li><input type="checkbox" id="p6y"><label for="p6y">H · Living document — version it, keep synced</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li>Export your LinkedIn profile as a starting skeleton, then <b>restructure into the 17 sections</b> — research and projects move up, banking bullets get rewritten around modeling/analysis/scaling capability.</li>
+      <li>Date pass: replace every "2024–2024" with month/year, pulled from offer letters and I-20s — not memory.</li>
+      <li>Verification audit, line by line: "can a document prove this?" If no — cut it or find the document. The $100M line lives or dies here.</li>
+      <li>Save as <b>CV_2026-06</b>; update on the first of each month alongside the analytics export. One afternoon total; maintenance is minutes.</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">7</div><div class="stitle"><h3>Build-phase actions</h3><p>Jun–Nov 2026 — this CREATES the evidence</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p7a"><label for="p7a"><b>Write up pilot results</b> <span class="tag now">first deliverable</span></label></li>
+      <li><input type="checkbox" id="p7b"><label for="p7b"><b>Land one outside adoption</b> — community college, school-district pilot, nonprofit partnership, or ed-org letter; no tie to you <span class="tag key">single most valuable evidence</span></label></li>
+      <li><input type="checkbox" id="p7c"><label for="p7c">Scale users with measurement built in — 20 → hundreds, tracked</label></li>
+      <li><input type="checkbox" id="p7d"><label for="p7d">Publish the pilot study</label></li>
+      <li><input type="checkbox" id="p7e"><label for="p7e">Present at 1–2 conferences</label></li>
+      <li><input type="checkbox" id="p7f"><label for="p7f">Create Google Scholar profile</label></li>
+      <li><input type="checkbox" id="p7g"><label for="p7g">Register as peer reviewer</label></li>
+      <li><input type="checkbox" id="p7h"><label for="p7h">Pitch media coverage of results</label></li>
+      <li><input type="checkbox" id="p7i"><label for="p7i"><b>Preservation protocol:</b> archive emails as PDFs · export analytics monthly · timestamp screenshots · keep website copies before redesigns</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li><b>Pilot write-up (June, 2–3 weeks):</b> pull the raw data → structure as a 4–6 page research note (background · the tool · method · results · limitations · next steps) → have a READS Lab colleague sanity-check the stats → post as a working paper / preprint (e.g., EdArXiv or SSRN) so it becomes citable. This single document feeds the brief, the letters, the conference abstract, and the media pitch.</li>
+      <li><b>Outside adoption (July outreach → Sept pilot → Nov data):</b> list 15 targets — Boston-area community colleges (Bunker Hill, Roxbury, MassBay), education nonprofits, after-school programs, Bangladesh-facing education orgs, your old tutoring networks. Offer a <b>free structured pilot with measurement built in</b>. One signed pilot agreement or MOU = Exhibit R, the most valuable page in your petition.</li>
+      <li><b>Scaling:</b> instrument the tools so every new user is counted and outcomes are logged by default — you're a quant; make the evidence generate itself.</li>
+      <li><b>Media (Oct):</b> once results exist, pitch the Harvard Gazette / HGSE communications, EdSurge, and local education press. One article = Exhibit Z.</li>
+    </ol></div>
+  </div>
+</details>
+
+<div class="phase"><span class="phase-num">Phase III</span><h2>Assembly &amp; filing</h2><div class="phase-rule"></div></div>
+
+<details class="card">
+  <summary><div class="badge">8</div><div class="stitle"><h3>Pro se jobs — the attorney's work, now yours</h3><p>No backstop: institutionalize doubt</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p8a"><label for="p8a"><b>Write the legal brief</b> — 15–30 pages, prong-by-prong <span class="tag key">hardest task</span></label></li>
+      <li><input type="checkbox" id="p8b"><label for="p8b">Read <b>Matter of Dhanasar</b> + Policy Manual Vol. 6, Part F, Ch. 5 + the filing-tips page</label></li>
+      <li><input type="checkbox" id="p8c"><label for="p8c">Study redacted successful pro se petitions</label></li>
+      <li><input type="checkbox" id="p8d"><label for="p8d">Exhibit management: TOC, numbered tabs, every claim → exhibit</label></li>
+      <li><input type="checkbox" id="p8dd"><label for="p8dd"><b>Evidence Matrix maintained</b> — see the matrix tab</label></li>
+      <li><input type="checkbox" id="p8e"><label for="p8e">RFE preparedness: ~87-day response window, calendar discipline</label></li>
+    </ul>
+    <div class="subhead">Quality control</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p8f"><label for="p8f">Limited-scope attorney review of the finished package (~$500–1,500)</label></li>
+      <li><input type="checkbox" id="p8g"><label for="p8g">Boston / Harvard law-school immigration clinic access checked <span class="tag now">this week</span></label></li>
+      <li><input type="checkbox" id="p8h"><label for="p8h">Red-team every document before it enters the package</label></li>
+    </ul>
+    <div class="subhead">Logistics</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p8i"><label for="p8i">Correct lockbox, full duplicate retained, tracked mail, receipt calendar</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute</div><ol>
+      <li><b>One weekend in June:</b> read Matter of Dhanasar (the actual decision) and Policy Manual Vol. 6, Part F, Ch. 5. Take notes mapping each requirement to your exhibits.</li>
+      <li><b>July:</b> collect 2–3 redacted winning pro se petitions from self-filer communities; outline their brief structures before writing your own.</li>
+      <li><b>Sept–Oct, the brief:</b> structure = introduction → EB-2 eligibility → Prong 1 → Prong 2 → Prong 3 → conclusion. Every factual claim gets a footnote to an exhibit number from the matrix. Draft a section per week; Claude red-teams each.</li>
+      <li><b>This week:</b> email Harvard Law's immigration clinic and Greater Boston Legal Services — ask whether they review self-prepared NIW packages. Book the limited-scope attorney review for November regardless.</li>
+      <li>Build an <b>RFE reserve folder</b>: strong evidence you chose not to file. If an RFE comes, you respond from reserve instead of scrambling.</li>
+    </ol></div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">9</div><div class="stitle"><h3>Forms &amp; filing package</h3><p>One petition + one application bundle — all fees inside</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p9a"><label for="p9a"><b>Form I-140</b> — the petition</label></li>
+      <li><input type="checkbox" id="p9b"><label for="p9b"><b>ETA-9089 Appendix A</b> + signed Final Determination</label></li>
+      <li><input type="checkbox" id="p9c"><label for="p9c"><b>I-907</b> — premium processing</label></li>
+      <li><input type="checkbox" id="p9d"><label for="p9d">Legal brief + tabbed exhibits</label></li>
+    </ul>
+    <div class="subhead">Concurrent I-485 package</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p9e"><label for="p9e"><b>I-485</b> — Adjustment of Status</label></li>
+      <li><input type="checkbox" id="p9f"><label for="p9f"><b>I-765</b> — EAD (lottery-proof work authorization)</label></li>
+      <li><input type="checkbox" id="p9g"><label for="p9g"><b>I-131</b> — Advance Parole</label></li>
+      <li><input type="checkbox" id="p9h"><label for="p9h"><b>I-693</b> — medical exam, sealed envelope</label></li>
+      <li><input type="checkbox" id="p9i"><label for="p9i">Photos, payments (G-1450 / checks), status-document copies</label></li>
+    </ul>
+    <div class="subhead">Final checks</div>
+    <ul class="checks">
+      <li><input type="checkbox" id="p9j"><label for="p9j">Full duplicate copy of the entire package retained</label></li>
+      <li><input type="checkbox" id="p9k"><label for="p9k">Current form editions verified on uscis.gov the week of mailing</label></li>
+      <li><input type="checkbox" id="p9l"><label for="p9l"><b>G-1145</b> e-notification clipped to each form</label></li>
+      <li><input type="checkbox" id="p9m"><label for="p9m"><b>Travel calendar locked</b> — trips before filing or after Advance Parole</label></li>
+      <li><input type="checkbox" id="p9n"><label for="p9n"><b>Originals folder</b> assembled for a possible I-485 interview</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute — assembly week</div><ol>
+      <li>Book the I-693 civil-surgeon exam 2–3 weeks before target mailing (find one via the USCIS "Find a Doctor" tool); bring vaccination records.</li>
+      <li>Download fresh editions of every form that week; fill, print single-sided, sign in black ink.</li>
+      <li>Print two complete copies of everything. Tab exhibits in matrix order; cover letter + table of contents on top.</li>
+      <li>Payments: one G-1450 or check per form, paper-clipped to its form — never one combined payment.</li>
+      <li>Ship FedEx/UPS with signature tracking to the correct lockbox for concurrent NIW + I-485 filings; calendar the 2–4 week receipt window and the biometrics window after.</li>
+    </ol></div>
+    <div class="note red"><b>Travel lock:</b> from filing day until the Advance Parole card is in hand, do not leave the US — departure abandons the I-485.</div>
+  </div>
+</details>
+
+<div class="phase"><span class="phase-num">Phase IV</span><h2>Governance</h2><div class="phase-rule"></div></div>
+
+<details class="card">
+  <summary><div class="badge">10</div><div class="stitle"><h3>Timeline</h3><p>The petition sprint + the STEM OPT insurance track</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <div class="tl">
+      <div class="tl-item hot"><div class="tl-when">Jun – Nov 2026</div><div class="tl-what"><b>Build phase.</b> Pilot write-up, recommender outreach (June — longest lead), outside adoption, endeavor statement, CV, evidence file, filing fund.</div></div>
+      <div class="tl-item hot"><div class="tl-when">Nov 2026 — the gate</div><div class="tl-what">All four yes: endeavor statement tight · results write-up done · ≥4 independent letters <b>signed</b> · brief reviewed by outside eyes. Yes → file December. No → slip to Feb–Mar 2027 without drama.</div></div>
+      <div class="tl-item"><div class="tl-when">Dec 2026 – early 2027</div><div class="tl-what">File I-140 (premium) + concurrent I-485. Priority date locked; ~$5,700 leaves the account.</div></div>
+      <div class="tl-item"><div class="tl-when">Feb 2027</div><div class="tl-what"><b>STEM OPT track:</b> HIO recommendation I-20 (~14 business days) → file I-765 + I-983 before OPT expires ~May 28, 2027. Needs E-Verify employer, paid 20+ hrs/wk, LDIT-related role. Confirm employer E-Verify before February.</div></div>
+      <div class="tl-item"><div class="tl-when">~45 business days post-filing</div><div class="tl-what">I-140 decision (or RFE → respond from the reserve folder).</div></div>
+      <div class="tl-item"><div class="tl-when">Spring 2027</div><div class="tl-what">EAD + Advance Parole combo card — work authorization independent of OPT or any lottery. Travel unlocks.</div></div>
+      <div class="tl-item"><div class="tl-when">Buffer</div><div class="tl-what">STEM OPT (if approved) runs to ~mid-2028 — cushion for RFEs or refiling.</div></div>
+      <div class="tl-item hot"><div class="tl-when">Late 2027 – 2028</div><div class="tl-what"><b>I-485 approved → ten-year green card produced and mailed.</b></div></div>
+    </div>
+    <div class="note warn"><b>Watch item:</b> rest-of-world EB-2 dates are current but not guaranteed forever (retrogression risk). Build deliberately — don't stretch to three years.</div>
+  </div>
+</details>
+
+<details class="card">
+  <summary><div class="badge">11</div><div class="stitle"><h3>Rules &amp; warnings</h3><p>Read monthly — they govern every step</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ol class="rules">
+      <li><div><b>Eligibility is SETTLED.</b> No licenses, certifications, or EB-1 criteria needed — ever. Stop shopping eligibility.</div></li>
+      <li><div><b>All three prongs must each pass.</b> No averaging. One endeavor, plural evidence.</div></li>
+      <li><div><b>The burden of proof is yours,</b> by preponderance of the evidence.</div></li>
+      <li><div><b>Letters are claims; exhibits are evidence.</b> Objective evidence carries the case; letters interpret it.</div></li>
+      <li><div><b>EAD approvals ≠ petition strength.</b> The petition is built, not assumed.</div></li>
+      <li><div><b>Credentials are threshold items, not arguments.</b> The case is impact documentation.</div></li>
+      <li><div><b>Never embellish.</b> Misrepresentation = permanent bars.</div></li>
+      <li><div><b>Consistency across every document.</b> Mismatches trigger RFEs.</div></li>
+      <li><div><b>20 home-campus users = a seed, not adoption.</b> Outside reach is the conversion.</div></li>
+      <li><div><b>Finance is supporting cast,</b> never the endeavor.</div></li>
+      <li><div><b>Procedure is unforgiving.</b> Current editions, exact fees, right lockbox, certified translations.</div></li>
+      <li><div><b>Institutionalize doubt.</b> Clinic, limited-scope review, red-team.</div></li>
+      <li><div><b>Keep USCIS and SEVP current.</b> AR-11 within 10 days of moving; SEVP within 10 days of job changes.</div></li>
+    </ol>
+  </div>
+</details>
+
+<details class="card" open>
+  <summary><div class="badge">12</div><div class="stitle"><h3>This week</h3><p>Day by day — all startable now</p></div><span class="scount"></span><span class="caret"></span></summary>
+  <div class="body">
+    <ul class="checks">
+      <li><input type="checkbox" id="p12a"><label for="p12a">Start the <b>pilot results write-up</b> — confirm: measured data or reported impressions?</label></li>
+      <li><input type="checkbox" id="p12b"><label for="p12b"><b>Recommender target list</b> (10–12 names); first outreach emails out</label></li>
+      <li><input type="checkbox" id="p12c"><label for="p12c">Email Harvard Law clinic + Greater Boston Legal Services re: package review</label></li>
+      <li><input type="checkbox" id="p12d"><label for="p12d">Request official transcripts (Harvard, Colby)</label></li>
+      <li><input type="checkbox" id="p12e"><label for="p12e">Open the filing fund; set the $1,100/mo auto-transfer</label></li>
+      <li><input type="checkbox" id="p12f"><label for="p12f">Draft <b>endeavor statement paragraph</b> → refine with Claude</label></li>
+      <li><input type="checkbox" id="p12g"><label for="p12g"><b>Email DSO:</b> confirm LDIT CIP code is STEM; <b>ask employer</b> about E-Verify enrollment</label></li>
+    </ul>
+    <div class="plan"><div class="plan-h">How to execute — the week, day by day</div><ol>
+      <li><b>Monday:</b> order both transcripts (20 min) · open the filing fund + auto-transfer (15 min) · send the DSO and E-Verify emails (15 min).</li>
+      <li><b>Tuesday:</b> the 90-minute endeavor-paragraph block. Send the rough draft to Claude.</li>
+      <li><b>Wednesday:</b> recommender list — five pools, 10–12 names, into the matrix.</li>
+      <li><b>Thursday:</b> clinic emails · create Scholar + ORCID profiles · set up the NIW cloud folder.</li>
+      <li><b>Friday:</b> pull the raw pilot data and assess it (measured vs reported) · send the first batch of four recommender outreach emails.</li>
+    </ol></div>
+  </div>
+</details>
+
+</div><!-- /tab-check -->
+
+<!-- ================= TAB 2 : EVIDENCE MATRIX ================= -->
+<div id="tab-matrix" class="hidden">
+  <div class="mx-summary">
+    <div class="mx-stat"><div class="n" id="mxTotal">0</div><div class="l">Exhibits</div></div>
+    <div class="mx-stat green"><div class="n" id="mxDone">0</div><div class="l">Complete</div></div>
+    <div class="mx-stat amber"><div class="n" id="mxProg">0</div><div class="l">In motion</div></div>
+    <div class="mx-stat red"><div class="n" id="mxNot">0</div><div class="l">Not started</div></div>
+  </div>
+  <div class="matrix-wrap">
+    <table class="matrix" id="mxTable">
+      <thead><tr><th>Exhibit</th><th>Document / item</th><th>Claim it supports</th><th>Prong</th><th>Source</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody id="mxBody"></tbody>
+    </table>
+  </div>
+  <div class="note" style="margin-top:16px">Status changes here live in this browser session only — the .xlsx version of this matrix is the durable copy. Update both, or screenshot before closing.</div>
+</div><!-- /tab-matrix -->
+
+<div class="colophon">
+  <span>Compiled June 2026 · verified against USCIS &amp; Harvard HIO sources · not legal advice</span>
+  <button class="reset" onclick="resetAll()">Reset checkboxes</button>
+</div>
+<p style="font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:10px">Checkbox and status state live in this browser session only — print to PDF for snapshots. Nothing exists beyond this document; every future to-do is a sub-task of something already here.</p>
+
+</div>
+
+<script>
+  function showTab(t){
+    document.getElementById('tab-check').classList.toggle('hidden', t!=='check');
+    document.getElementById('tab-matrix').classList.toggle('hidden', t!=='matrix');
+    document.getElementById('tabbtn-check').classList.toggle('active', t==='check');
+    document.getElementById('tabbtn-matrix').classList.toggle('active', t==='matrix');
+    document.getElementById('progressrow').style.display = (t==='check') ? 'flex' : 'none';
+  }
+
+  const boxes = Array.from(document.querySelectorAll('ul.checks input[type=checkbox]'));
+  const pfill = document.getElementById('pfill');
+  const pdone = document.getElementById('pdone');
+  const ptotal = document.getElementById('ptotal');
+  ptotal.textContent = boxes.length;
+
+  function sectionUpdate(){
+    document.querySelectorAll('details.card').forEach(card=>{
+      const items = card.querySelectorAll('ul.checks input[type=checkbox]');
+      const count = card.querySelector('.scount');
+      if(!count) return;
+      if(items.length===0){ count.textContent='ref'; return; }
+      const done = Array.from(items).filter(i=>i.checked).length;
+      count.textContent = done + ' / ' + items.length;
+      count.classList.toggle('done', done===items.length && items.length>0);
+    });
+  }
+  function globalUpdate(){
+    const done = boxes.filter(b=>b.checked).length;
+    pdone.textContent = done;
+    pfill.style.width = (boxes.length? (done/boxes.length*100):0) + '%';
+    sectionUpdate();
+  }
+  boxes.forEach(b=>b.addEventListener('change', globalUpdate));
+  function resetAll(){ boxes.forEach(b=>b.checked=false); globalUpdate(); }
+
+  const MX = [
+["Ex. A","Harvard master's diploma (LDIT)","Advanced degree held","Eligibility","Harvard / HGSE","Complete","The anchor document"],
+["Ex. B","Harvard official transcript","Advanced degree + field of study","Eligibility","Harvard registrar","Not started","Order this week"],
+["Ex. C","Colby CS degree + transcript","Technical foundation; prior US STEM degree","Eligibility","Colby registrar","Not started","Also backs STEM OPT prior-degree route"],
+["Ex. D","Oxford visiting program records (AI)","AI training depth","Prong 2","Oxford / LMH","Not started",""],
+["Ex. E","Tuck pre-MBA certificate","Finance / scaling toolkit","Prong 2","Dartmouth Tuck","Not started","Supporting only"],
+["Ex. F","MIT Sloan cross-registration records","Quant finance coursework","Prong 2","MIT / Harvard","Not started","Supporting only"],
+["Ex. G","Passport + I-94 + all I-20s","Identity + lawful status history","Status","Self / CBP / schools","In progress",""],
+["Ex. H","Both EAD cards (front/back)","Continuous work authorization","Status","USCIS","Complete","C03B card produced 2026-05-28"],
+["Ex. I","SEVP / employment records + tax returns","Status compliance + self-sufficiency","Status","Self / IRS","In progress","Correct residency status on returns"],
+["Ex. J","Birth certificate + certified translation","Identity (I-485 requirement)","Filing","Bangladesh registry","Not started","Order translation early"],
+["Ex. K","Endeavor statement (1–3 pp)","Defines the specific endeavor","Prong 1","Self-authored","Not started","WRITE FIRST — box 12f"],
+["Ex. L","Publication 1: Visceral Adiposity Index (T2DM)","Research record","Prong 2","Journal","Complete","Full citation + PDF copy"],
+["Ex. M","Publication 2: PAD/CAD ischaemic limb changes","Research record","Prong 2","Journal","Complete","Full citation + PDF copy"],
+["Ex. N","Pilot results write-up (20-user trial)","Measured outcomes of the tool","Prong 2","SameerLearn","Draft","Measured data > reported impressions"],
+["Ex. O","Raw trial data + dated analytics exports","Corroborates the write-up","Prong 2","SameerLearn","In progress","Export monthly; timestamp"],
+["Ex. P","Tool documentation (function, launch, screenshots)","The tools exist and work","Prong 2","SameerLearn / FinanAI","In progress",""],
+["Ex. Q","Adoption metrics (users, growth, institutions)","Traction and trajectory","Prong 2","Analytics","Not started","20 → hundreds, tracked"],
+["Ex. R","OUTSIDE ADOPTION evidence (non-Harvard)","Reach beyond one institution","Prong 1","Partner institution","Not started","SINGLE MOST VALUABLE EXHIBIT"],
+["Ex. S","20 user testimonial letters","User-level corroboration","Prong 2","Trial users","Complete","Corroboration, not expert letters"],
+["Ex. T","READS Lab role documentation","Active researcher, well-positioned","Prong 2","Harvard READS Lab","Not started",""],
+["Ex. U","Ventures documentation (sameerlearn, finanai)","Execution record, progress","Prong 2","Self","In progress",""],
+["Ex. V","LOIs / MOUs / interest emails (archived PDF)","Third-party interest","Prong 2","Institutions","Not started","Preservation protocol applies"],
+["Ex. W","Google Scholar + ORCID + quarterly exports","Scholarly footprint","Prong 2","Scholar / ORCID","Not started","Set up this month"],
+["Ex. X","Conference talk / poster materials","Field engagement","Prong 2","Conference","Not started","Target 1–2 this year"],
+["Ex. Y","Peer-review invitation / record","Recognized to judge others' work","Prong 2","Journal","Not started",""],
+["Ex. Z","Media coverage of pilot results","External validation","Prong 2","Press","Not started","Pitch EdSurge / Harvard pubs"],
+["Ex. AA","AI on critical & emerging technologies list","Domain is nationally important","Prong 1","White House / NSTC","Not started","Print + cite"],
+["Ex. AB","Federal education priorities documents","Education outcomes = national priority","Prong 1","Dept. of Education","Not started",""],
+["Ex. AC","Expert letter 1 (independent)","Interprets evidence for adjudicator","Prong 2","TBD","Not started","Letterhead + signer CV"],
+["Ex. AD","Expert letter 2 (independent)","Interprets evidence for adjudicator","Prong 2","TBD","Not started",""],
+["Ex. AE","Expert letter 3 (independent)","Interprets evidence for adjudicator","Prong 2","TBD","Not started",""],
+["Ex. AF","Expert letter 4 (independent)","Interprets evidence for adjudicator","Prong 2","TBD","Not started","Gate requires ≥4 signed"],
+["Ex. AG","Expert letter 5 (independent, optional)","Interprets evidence for adjudicator","Prong 2","TBD","Not started",""],
+["Ex. AH","Collaborator letter 1 (READS Lab PI)","First-hand achievement detail","Prong 2","READS Lab","Not started",""],
+["Ex. AI","Collaborator letter 2 (professor / supervisor)","First-hand achievement detail","Prong 2","TBD","Not started",""],
+["Ex. AJ","Gov / quasi-gov entity letter (stretch)","National-interest endorsement","Prong 1","TBD","Not started","Relevant to all three prongs"],
+["Ex. AK","Future collaborator interest letter (optional)","Well-positioned going forward","Prong 2","TBD","Not started",""],
+["Ex. AL","Waiver narrative (ventures + research)","Labor cert impractical; US benefits","Prong 3","Self-authored","Not started","Lives inside the brief"],
+["Ex. AM","Immigration CV (consistency-checked)","Full record, cross-referenced","Prong 2","Self-authored","Not started","Part 6 spec"],
+["Ex. AN","Legal brief (15–30 pp, prong-by-prong)","Ties every exhibit to the test","Filing","Self-authored","Not started","Outside review before mailing"]
+  ];
+
+  const STATUSES = ["Not started","In progress","Draft","Complete"];
+  function statusClass(s){
+    if(s==="Complete") return "s-complete";
+    if(s==="In progress") return "s-progress";
+    if(s==="Draft") return "s-draft";
+    return "s-not";
+  }
+  function renderMatrix(){
+    const tb = document.getElementById('mxBody');
+    tb.innerHTML = "";
+    MX.forEach(function(r,i){
+      const tr = document.createElement('tr');
+      if(r[0]==="Ex. R") tr.className="star";
+      let opts = "";
+      STATUSES.forEach(function(s){
+        opts += '<option' + (s===r[5] ? ' selected' : '') + '>' + s + '</option>';
+      });
+      tr.innerHTML = '<td class="ex">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td>'+
+        '<td class="prong">'+r[3]+'</td><td>'+r[4]+'</td>'+
+        '<td><select class="status '+statusClass(r[5])+'" data-i="'+i+'">'+opts+'</select></td>'+
+        '<td style="color:var(--muted);font-size:13px">'+r[6]+'</td>';
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll('select.status').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        MX[+sel.dataset.i][5] = sel.value;
+        sel.className = 'status ' + statusClass(sel.value);
+        mxCounts();
+      });
+    });
+    mxCounts();
+  }
+  function mxCounts(){
+    let done=0, prog=0, not=0;
+    MX.forEach(function(r){
+      if(r[5]==="Complete") done++;
+      else if(r[5]==="Not started") not++;
+      else prog++;
+    });
+    document.getElementById('mxTotal').textContent = MX.length;
+    document.getElementById('mxDone').textContent = done;
+    document.getElementById('mxProg').textContent = prog;
+    document.getElementById('mxNot').textContent = not;
+  }
+
+  renderMatrix();
+  globalUpdate();
+</script>
+</body>
+</html>
